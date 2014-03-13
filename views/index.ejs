@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <% include _head %>
+    </head>
+    <body>
+        <h1>The Raffler!</h1>
+
+        <div id="main">
+            <h3>Create A Raffle</h3>
+            <form action="/raffles" method="POST">
+                <input name="name" placeholder="My Awesome Raffle"/>
+                <input type="submit" value="Create Raffle"/>
+            </form>
+
+            <h3>Your Raffles</h3>
+            <ul>
+                <% raffles.forEach(function(raffle) { %>
+                    <li>
+                        <a href="/raffles/<%= raffle._id %>"><%= raffle.name %></a> |
+                        <a href="#" class="delete" data-id="<%= raffle._id %>">
+                            Delete
+                        </a>
+                    </li>
+                <% }); %>
+            </ul>
+        </div>
+        <% include _foot %>
+    </body>
+</html>

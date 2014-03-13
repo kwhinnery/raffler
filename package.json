@@ -1,0 +1,31 @@
+{
+  "name": "raffler",
+  "version": "0.0.1",
+  "description": "The Raffler makes it easy to setup SMS raffles to give out prizes at your events!",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kwhinnery/raffler.git"
+  },
+  "keywords": [
+    "sms",
+    "raffle",
+    "twilio"
+  ],
+  "author": "Kevin Whinnery",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kwhinnery/raffler/issues"
+  },
+  "dependencies": {
+    "mongoose": "~3.8.8",
+    "ejs": "~0.8.5",
+    "express": "~3.4.8",
+    "gopher": "0.0.7",
+    "jquery": "~2.1.0",
+    "twilio": "~1.6.0"
+  }
+}

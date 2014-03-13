@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+    <head>
+        <% include _head %>
+    </head>
+    <body>
+        <h1><%= raffle.name %></h1>
+        <div id="main">
+            <div id="chooser">
+                <% Object.keys(entries).forEach(function(number) { %>
+                    <span data-name="<%= entries[number] %>"
+                        data-number="<%= number %>">
+                        <%= entries[number] %>
+                    </span>
+                <% }); %>
+            </div>
+            <button>START!</button>
+            <h3>WINNARS</h3>
+            <ul id="winnars">
+            </ul>
+            <p>
+                <a href="/">&lt;&lt; Back To All Raffles</a>
+            </p>
+        </div>
+
+        
+        <% include _foot %>
+    </body>
+</html>
