@@ -30,9 +30,11 @@ $(function() {
             fx.stop();
             shuffling = false;
             $(this).html('START!');
-            // Add the winnar to the list
             clearInterval(shuffler);
 
+            // Add the winnar to the list
+            var winnar = $('#chooser span').first().html();
+            $('#winnars').append('<li>'+winnar+'</li>');
         }
     });
 });
