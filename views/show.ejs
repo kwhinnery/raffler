@@ -6,6 +6,10 @@
     <body>
         <h1><%= raffle.name %></h1>
         <div id="main">
+            <p class="instructions">
+                Text your name to <span><%=: raffle.twilioNumber | twilioNumber %></span> 
+                to enter the contest!
+            </p>
             <div id="chooser">
                 <% Object.keys(entries).forEach(function(number) { %>
                     <span data-name="<%= entries[number] %>"

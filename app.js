@@ -1,10 +1,21 @@
 var app = require('gopher'),
     twilio = require('twilio'),
     express = require('express'),
-    mongoose = require('mongoose');
+    ejs = require('ejs'),
+    mongoose = require('mongoose'),
+    config = require('./config');
 
 // Initialize MongoDB and mongoose
-mongoose.connect(process.env.MONGOHQ_URL);
+mongoose.connect(config.mongoUrl);
+
+// Create EJS filter to display a Twilio phone number
+ejs.filters.twilioNumber = function(number) {
+    var areaCode = number.substring(2,5),
+        first = number.substring(5,8),
+        last = number.substring(8);
+
+    return '('+areaCode+') '+first+'-'+last;
+};
 
 // Controllers to handle HTTP requests
 var twilioController = require('./controllers/twilio'),
@@ -12,11 +23,17 @@ var twilioController = require('./controllers/twilio'),
 
 // Set up Twilio Webhook Route to handle new entries
 app.post('/raffles/:id', twilio.webhook({
-    validate: process.NODE_ENV === 'production'
+    validate: process.NODE_ENV === 'production',
+    host: config.server.host,
+    protocol: config.server.protocol
 }), twilioController.sms);
 
+app.post('/voice', twilio.webhook({
+    validate: false
+}), twilioController.voice);
+
 // Set up admin UI routes, secured with HTTP Basic Auth
-var auth = express.basicAuth(process.env.BASIC_UN, process.env.BASIC_PW);
+var auth = express.basicAuth(config.username, config.password);
 
 // Middleware to redirect all non-secure traffic to an SSL endpoint - use
 // Heroku's header to determine if the original request was over SSL or not

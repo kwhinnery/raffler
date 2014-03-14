@@ -1,4 +1,9 @@
-var Raffle = require('../models/Raffle');
+var Raffle = require('../models/Raffle'),
+    twilio = require('twilio'),
+    config = require('../config');
+
+// Create an authenticated twilio REST API client
+var client = twilio(config.twilio.sid, config.twilio.tkn);
 
 // Display home page
 exports.index = function(request, response) {
@@ -16,8 +21,37 @@ exports.create = function(request, response) {
         name: request.param('name')
     });
 
-    raffle.save(function(err) {
-        response.redirect('/');
+    raffle.save(function(err, doc) {
+        if (!err) {
+            // Programmatically buy a twilio number
+            client.availablePhoneNumbers('US').local.get({
+                smsEnabled:true
+            }).then(function(results) {
+                if (results.availablePhoneNumbers.length < 1) {
+                    throw { message: 'No phone numbers available' };
+                }
+
+                return client.incomingPhoneNumbers.create({
+                    phoneNumber: results.availablePhoneNumbers[0].phoneNumber,
+                    friendlyName: '[The Raffler]: '+doc.name,
+                    smsUrl: config.server.protocol + 
+                        '://' + config.server.host +
+                        '/raffles/'+doc._id
+                });
+            }).then(function(data) {
+                raffle.twilioNumber = data.phoneNumber;
+                raffle.twilioNumberSid = data.sid;
+                raffle.save(function(err) {
+                    response.redirect('/');
+                });
+            }).fail(function(err) {
+                console.error(err);
+                response.redirect('/');
+            });
+        } else {
+            console.error(err);
+            response.redirect('/');
+        }
     });
 };
 
@@ -43,7 +77,13 @@ exports.remove = function(request, response) {
         if (err) {
             response.send(500, err);
         } else {
-            response.send(doc);
+            client.incomingPhoneNumbers(doc.twilioNumberSid).delete(function(err) {
+                if (err) {
+                    response.send(500, err);
+                } else {
+                    response.send(doc);
+                }
+            });
         }
     });
 };

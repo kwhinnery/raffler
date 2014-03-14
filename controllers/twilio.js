@@ -32,3 +32,12 @@ exports.sms = function(request, response) {
         }
     });
 };
+
+exports.voice = function(request, response) {
+    var twiml = new twilio.TwimlResponse();
+    twiml.say('Hello there! Thanks for participating in this raffle, powered by Twilleyo. Please text your first and last name to this number to enter.', {
+        voice:'alice'
+    });
+    response.send(twiml);
+};
+

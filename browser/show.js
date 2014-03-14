@@ -15,26 +15,46 @@ $(function() {
     var $entries = $('#chooser span'),
         shuffling = false,
         shuffler = null,
-        fx = new buzz.sound('/shuffle.wav');
+        shuffleSound = new buzz.sound('/shuffle.wav', {
+            preload:true
+        }),
+        victorySound = new buzz.sound('/victory.mp3', {
+            preload:true
+        });
 
     $('button').on('click', function() {
         if (!shuffling) {
-            fx.play().loop();
             shuffling = true;
-            $(this).html('STOP');
+
+            // Audio
+            victorySound.stop();
+            shuffleSound.play().loop();
+
             // Start the shuffle
+            var $winnar = $('#chooser span').first();
+            $winnar.css('color','yellow').html($winnar.data('name'));
+
+            $(this).html('STOP');
             shuffler = setInterval(function() {
                 $entries.shuffle();
-            },100);
+            },50);
         } else {
-            fx.stop();
             shuffling = false;
+            var $winnar = $('#chooser span').first();
+            shuffleSound.stop();
             $(this).html('START!');
             clearInterval(shuffler);
 
-            // Add the winnar to the list
-            var winnar = $('#chooser span').first().html();
-            $('#winnars').append('<li>'+winnar+'</li>');
+            if ($winnar.length > 0) {
+                victorySound.setVolume(100);
+                victorySound.play().fadeOut(9000);
+
+                // Add the winnar to the list
+                var winnar = $winnar.html();
+                $winnar.html('>>>> '+winnar+' <<<<'.toUpperCase())
+                    .css('color','cyan');
+                $('#winnars').append('<li>'+winnar+'</li>');
+            }
         }
     });
 });
