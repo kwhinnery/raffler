@@ -1,5 +1,6 @@
 var $ = require('jquery'),
-    buzz = require('node-buzz');
+    buzz = require('node-buzz'),
+    sanitizer = require('sanitizer');
 
 // Little plugin to shuffle child elements randomly
 $.fn.shuffle = function () {
@@ -50,7 +51,8 @@ $(function() {
                 victorySound.play().fadeOut(9000);
 
                 // Add the winnar to the list
-                var winnar = $winnar.html();
+                var winnar = sanitizer.sanitize($winnar.html());
+
                 $winnar.html('>>>> '+winnar+' <<<<'.toUpperCase())
                     .css('color','cyan');
                 $('#winnars').append('<li>'+winnar+'</li>');

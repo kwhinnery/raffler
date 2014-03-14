@@ -27,9 +27,10 @@
     "gopher": "0.0.7",
     "jquery": "~2.1.0",
     "twilio": "~1.6.0",
-    "node-buzz": "~1.1.0"
+    "node-buzz": "~1.1.0",
+    "sanitizer": "~0.1.1"
   },
   "engines": {
-    "node":"0.10.26"
+    "node": "0.10.26"
   }
 }
