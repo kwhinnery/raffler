@@ -1,4 +1,5 @@
 var twilio = require('twilio'),
+    sanitizer = require('sanitizer'),
     Raffle = require('../models/Raffle');
 
 exports.sms = function(request, response) {
@@ -19,7 +20,7 @@ exports.sms = function(request, response) {
             // Enter the user by phone number as unique ID. They can text
             // in as much as they want to change their name
             var entries = JSON.parse(doc.entries);
-            entries[from] = body;
+            entries[from] = sanitizer.sanitize(body);
             doc.entries = JSON.stringify(entries);
             doc.save(function(err) {
                 if (err) {
